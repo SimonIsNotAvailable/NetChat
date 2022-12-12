@@ -9,7 +9,7 @@ public class MessageSettings {
     private static Properties properties;
 
     static {
-        try (FileInputStream file = new FileInputStream("src/main/resources/Messages.properties");) {
+        try (FileInputStream file = new FileInputStream("src/main/resources/Messages.properties")) {
             properties = new Properties();
             properties.load(file);
         } catch (IOException e) {

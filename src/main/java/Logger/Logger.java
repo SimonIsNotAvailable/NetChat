@@ -15,7 +15,7 @@ public class Logger {
             try {
                 log.createNewFile();
             } catch (IOException e) {
-                System.out.println("* Cannot create log file *");
+                System.out.println(MessageSettings.getProperty("log_trouble_create"));
             }
         }
     }
@@ -44,7 +44,7 @@ public class Logger {
             }
             return true;
         } catch (IOException e) {
-            System.out.println(MessageSettings.getProperty("log.cannot.access"));
+            System.out.println(MessageSettings.getProperty("log_trouble_access"));
             return false;
         } finally {
             out.close();
