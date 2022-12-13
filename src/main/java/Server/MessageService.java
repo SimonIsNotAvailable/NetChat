@@ -15,8 +15,8 @@ import static Logger.FormatTime.getCurrentTime;
 public class MessageService implements Runnable {
 
     private final Socket clientSocket;
-    private PrintWriter outcome;
-    private BufferedReader income;
+    private PrintWriter out;
+    private BufferedReader in;
     private String username;
     private List<MessageService> usersOnline;
     private final Logger logger = Logger.getInstance();
@@ -29,19 +29,19 @@ public class MessageService implements Runnable {
     @Override
     public void run() {
         try {
-            outcome = new PrintWriter(clientSocket.getOutputStream(), true);
-            income = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             register();
             while (readAndSendMessage());
         } catch (IOException e) {
             usersOnline.remove(this);
-            String info = formatEvent("* " + username + " has disconnected *");
+            String info = formatEvent("| " + username + " has disconnected |");
             printMsgInConsoleAndSendToAll(info);
             logger.log(info, LogType.INFO, true);
         } finally {
-            outcome.close();
+            out.close();
             try {
-                income.close();
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,17 +49,17 @@ public class MessageService implements Runnable {
     }
 
     public boolean register() {
-        outcome.println(MessageSettings.getProperty("username"));
+        out.println(MessageSettings.getProperty("username"));
         String name;
         try {
             do {
-                name = income.readLine();
+                name = in.readLine();
             } while (isUsernameExists(name));
             username = name;
-            String info = formatEvent("* " + username + " has joined the chat *");
+            String info = formatEvent("| " + username + " has joined the chat |");
             printMsgInConsoleAndSendToAll(info);
             logger.log(info, LogType.INFO, true);
-            outcome.println(MessageSettings.getProperty("user_connect"));
+            out.println(MessageSettings.getProperty("user_connect"));
             usersOnline.add(this);
             return true;
         } catch (IOException e) {
@@ -71,7 +71,7 @@ public class MessageService implements Runnable {
     public boolean isUsernameExists(String name) {
         for (MessageService user : usersOnline) {
             if (user.getUsername().equals(name)) {
-                outcome.println(MessageSettings.getProperty("username_occupied"));
+                out.println(MessageSettings.getProperty("username_occupied"));
                 return true;
             }
         }
@@ -79,9 +79,9 @@ public class MessageService implements Runnable {
     }
 
     public boolean readAndSendMessage() throws IOException {
-        String message = income.readLine();
+        String message = in.readLine();
         if ("/exit".equalsIgnoreCase(message)) {
-            String info = formatEvent("* " + username + " leaving the chat *");
+            String info = formatEvent("| " + username + " leaving the chat |");
             printMsgInConsoleAndSendToAll(info);
             usersOnline.remove(this);
             logger.log(info, LogType.INFO, true);
@@ -98,7 +98,7 @@ public class MessageService implements Runnable {
         System.out.println(msg);
         for (MessageService user : usersOnline) {
             if (!user.getUsername().equals(username)) {
-                user.getOutcome().println(msg);
+                user.getOut().println(msg);
             }
         }
     }
@@ -110,16 +110,16 @@ public class MessageService implements Runnable {
     public String formatMessage(String msg) {
         return getCurrentTime() + username + " says: " + msg;
     }
-    public PrintWriter getOutcome() {
-        return outcome;
+    public PrintWriter getOut() {
+        return out;
     }
 
-    public void setOutcome(PrintWriter outcome) {
-        this.outcome = outcome;
+    public void setOut(PrintWriter out) {
+        this.out = out;
     }
 
-    public void setIncome(BufferedReader income) {
-        this.income = income;
+    public void setIn(BufferedReader in) {
+        this.in = in;
     }
     public String getUsername() {
         return username;

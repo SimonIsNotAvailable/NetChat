@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
     private Logger logger = Logger.getInstance();
     private ServerSocket serverSocket;
-    private List<MessageService> usersOnline;
+    private List<MessageService> usersOnline = new CopyOnWriteArrayList<>();
 
     public boolean startServer() {
         int port = Integer.parseInt(ServerSettings.getProperty("port"));
