@@ -27,6 +27,7 @@ public class Server {
         logger.log(start, LogType.INFO, false);
         return true;
     }
+
     public void listenForConnection() {
         while (true) {
             try {

@@ -32,7 +32,7 @@ public class MessageService implements Runnable {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             register();
-            while (readAndSendMessage());
+            while (readAndSendMessage()) ;
         } catch (IOException e) {
             usersOnline.remove(this);
             String info = formatEvent("| " + username + " has disconnected |");
@@ -110,6 +110,7 @@ public class MessageService implements Runnable {
     public String formatMessage(String msg) {
         return getCurrentTime() + username + " says: " + msg;
     }
+
     public PrintWriter getOut() {
         return out;
     }
@@ -121,6 +122,7 @@ public class MessageService implements Runnable {
     public void setIn(BufferedReader in) {
         this.in = in;
     }
+
     public String getUsername() {
         return username;
     }
